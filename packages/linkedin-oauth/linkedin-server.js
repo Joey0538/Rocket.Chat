@@ -20,9 +20,9 @@ const getImage = (profilePicture) => {
 };
 
 // Request for email, returns array
-const getEmails = function(accessToken) {
+const getEmails = function (accessToken) {
 	const url = encodeURI(
-		`https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))&oauth2_access_token=${ accessToken }`,
+		`https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))&oauth2_access_token=${accessToken}`,
 	);
 	const response = HTTP.get(url).data;
 	const emails = [];
@@ -33,7 +33,7 @@ const getEmails = function(accessToken) {
 };
 
 // checks whether a string parses as JSON
-const isJSON = function(str) {
+const isJSON = function (str) {
 	try {
 		JSON.parse(str);
 		return true;
@@ -45,9 +45,9 @@ const isJSON = function(str) {
 // returns an object containing:
 // - accessToken
 // - expiresIn: lifetime of token in seconds
-const getTokenResponse = function(query) {
+const getTokenResponse = function (query) {
 	const config = ServiceConfiguration.configurations.findOne({ service: 'linkedin' });
-	if (!config) { throw new ServiceConfiguration.ConfigError('Service not configured'); }
+	if (!config) throw new ServiceConfiguration.ConfigError('Service not configured');
 
 	let responseContent;
 	try {
@@ -62,12 +62,12 @@ const getTokenResponse = function(query) {
 			},
 		}).content;
 	} catch (err) {
-		throw new Error(`Failed to complete OAuth handshake with Linkedin. ${ err.message }`);
+		throw new Error(`Failed to complete OAuth handshake with Linkedin. ${err.message}`);
 	}
 
 	// If 'responseContent' does not parse as JSON, it is an error.
 	if (!isJSON(responseContent)) {
-		throw new Error(`Failed to complete OAuth handshake with Linkedin. ${ responseContent }`);
+		throw new Error(`Failed to complete OAuth handshake with Linkedin. ${responseContent}`);
 	}
 
 	// Success! Extract access token and expiration
@@ -76,7 +76,7 @@ const getTokenResponse = function(query) {
 	const expiresIn = parsedResponse.expires_in;
 
 	if (!accessToken) {
-		throw new Error(`Failed to complete OAuth handshake with Linkedin -- can't find access token in HTTP response. ${ responseContent }`);
+		throw new Error(`Failed to complete OAuth handshake with Linkedin -- can't find access token in HTTP response. ${responseContent}`);
 	}
 
 	return {
@@ -86,14 +86,14 @@ const getTokenResponse = function(query) {
 };
 
 // Request available fields from r_liteprofile
-const getIdentity = function(accessToken) {
+const getIdentity = function (accessToken) {
 	try {
 		const url = encodeURI(
-			`https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))&oauth2_access_token=${ accessToken }`,
+			`https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))&oauth2_access_token=${accessToken}`,
 		);
 		return HTTP.get(url).data;
 	} catch (err) {
-		throw new Error(`Failed to fetch identity from Linkedin. ${ err.message }`);
+		throw new Error(`Failed to fetch identity from Linkedin. ${err.message}`);
 	}
 };
 
@@ -139,6 +139,6 @@ OAuth.registerService('linkedin', 2, null, (query) => {
 	};
 });
 
-Linkedin.retrieveCredential = function(credentialToken, credentialSecret) {
+Linkedin.retrieveCredential = function (credentialToken, credentialSecret) {
 	return OAuth.retrieveCredential(credentialToken, credentialSecret);
 };

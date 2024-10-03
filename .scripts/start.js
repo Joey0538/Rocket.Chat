@@ -72,12 +72,12 @@ function startProcess(opts, callback) {
 		proc.stderr.pipe(logStream);
 	}
 
-	proc.on('exit', function(code, signal) {
+	proc.on('exit', function (code, signal) {
 		if (code != null) {
 			exitCode = code;
-			console.log(opts.name, `exited with code ${ code }`);
+			console.log(opts.name, `exited with code ${code}`);
 		} else {
-			console.log(opts.name, `exited with signal ${ signal }`);
+			console.log(opts.name, `exited with signal ${signal}`);
 		}
 
 		processes.splice(processes.indexOf(proc), 1);
@@ -90,11 +90,11 @@ function startProcess(opts, callback) {
 		if (processes.length === 0) {
 			waitPortRelease(appOptions.env.PORT)
 				.then(() => {
-					console.log(`Port ${ appOptions.env.PORT } was released, exiting with code ${ exitCode }`);
+					console.log(`Port ${appOptions.env.PORT} was released, exiting with code ${exitCode}`);
 					process.exit(exitCode);
 				})
 				.catch((error) => {
-					console.error(`Error waiting port ${ appOptions.env.PORT } to be released, exiting with code ${ exitCode }`);
+					console.error(`Error waiting port ${appOptions.env.PORT} to be released, exiting with code ${exitCode}`);
 					console.error(error);
 					process.exit(exitCode);
 				});
@@ -130,7 +130,7 @@ function startChimp() {
 		// params: ['2'],
 		options: {
 			env: Object.assign({}, process.env, {
-				NODE_PATH: `${ process.env.NODE_PATH + path.delimiter + srcDir + path.delimiter + srcDir }/node_modules`,
+				NODE_PATH: `${process.env.NODE_PATH + path.delimiter + srcDir + path.delimiter + srcDir}/node_modules`,
 			}),
 		},
 	});
@@ -138,7 +138,7 @@ function startChimp() {
 
 function chimpNoMirror() {
 	appOptions.waitForMessage = 'SERVER RUNNING';
-	startApp(function() {
+	startApp(function () {
 		startChimp();
 	});
 }

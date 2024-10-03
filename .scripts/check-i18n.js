@@ -41,7 +41,7 @@ const checkUniqueKeys = (content, json, filename) => {
 	const allKeys = [...matchKeys];
 
 	if (allKeys.length !== Object.keys(json).length) {
-		throw new Error(`Duplicated keys found on file ${ filename }`);
+		throw new Error(`Duplicated keys found on file ${filename}`);
 	}
 };
 
@@ -60,7 +60,7 @@ const validate = (i18nFiles, usedKeys) => {
 			return errors;
 		}
 
-		console.log('\n## File', file, `(${ result.length } errors)`);
+		console.log('\n## File', file, `(${result.length} errors)`);
 
 		result.forEach(({ key, miss }) => {
 			console.log('\n- Key:', key, '\n  Missing variables:', miss.join(', '));
@@ -70,7 +70,7 @@ const validate = (i18nFiles, usedKeys) => {
 	}, 0);
 
 	if (totalErrors > 0) {
-		throw new Error(`\n${ totalErrors } errors found`);
+		throw new Error(`\n${totalErrors} errors found`);
 	}
 };
 
@@ -90,7 +90,7 @@ const checkFiles = async (sourcePath, sourceFile, fix = false) => {
 
 	const keysWithInterpolation = usedKeys.filter(({ replaces }) => !!replaces);
 
-	const i18nFiles = await fg([`${ sourcePath }/**/*.i18n.json`]);
+	const i18nFiles = await fg([`${sourcePath}/**/*.i18n.json`]);
 
 	if (fix) {
 		return removeMissingKeys(i18nFiles, keysWithInterpolation);

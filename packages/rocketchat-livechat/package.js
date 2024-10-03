@@ -13,7 +13,7 @@ Package.registerBuildPlugin({
 	},
 });
 
-Package.onUse(function(api) {
+Package.onUse(function (api) {
 	// livechat app
 	api.addAssets('assets/demo.html', 'client');
 });

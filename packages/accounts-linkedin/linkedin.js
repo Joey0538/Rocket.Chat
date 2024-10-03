@@ -5,7 +5,7 @@ import { Linkedin } from 'meteor/pauli:linkedin-oauth';
 Accounts.oauth.registerService('linkedin');
 
 if (Meteor.isClient) {
-	const loginWithLinkedin = function(options, callback) {
+	const loginWithLinkedin = function (options, callback) {
 		// support a callback without options
 		if (!callback && typeof options === 'function') {
 			callback = options;

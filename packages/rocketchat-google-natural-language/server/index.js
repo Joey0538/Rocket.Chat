@@ -20,7 +20,7 @@ settings.watch('GoogleNaturalLanguage_ServiceAccount', (value) => {
 	}
 });
 
-const setRoomSentiment = function(message) {
+const setRoomSentiment = function (message) {
 	if (!languageClient) {
 		return message;
 	}

@@ -64,7 +64,7 @@ async function runInstance(config: IConfig): Promise<void> {
 		...mainConfig.env,
 	};
 
-	env.ROOT_URL = `http://localhost:${ env.PORT }`;
+	env.ROOT_URL = `http://localhost:${env.PORT}`;
 
 	const spawnConfig = {
 		...mainConfig,
