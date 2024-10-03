@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+  mongodb:
+    image: bitnami/mongodb:4.4.14-debian-10-r0
+    container_name: mongodb
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb-data:/bitnami/mongodb
+    environment:
+      MONGODB_ADVERTISED_HOSTNAME: mongodb
+      MONGODB_REPLICA_SET_MODE: primary
+      MONGODB_REPLICA_SET_NAME: rs0
+      MONGODB_INITIAL_PRIMARY_HOST: mongodb
+      ALLOW_EMPTY_PASSWORD: 'yes'
+
+networks:
+  default:
+    name: tchat-dev-network
+
+volumes:
+  mongodb-data:

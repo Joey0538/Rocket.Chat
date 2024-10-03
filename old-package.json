@@ -13,7 +13,6 @@
 	],
 	"scripts": {
 		"start": "meteor",
-		"dev": "meteor --exclude-archs \"web.browser.legacy, web.cordova\"",
 		"debug": "meteor run --inspect",
 		"debug-brk": "meteor run --inspect-brk",
 		"lint": "meteor npm run stylelint && meteor npm run eslint",

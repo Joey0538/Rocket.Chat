@@ -1,0 +1,25 @@
+
+
+version: '3.7'
+
+services:
+  mongo-express:
+    image: mongo-express:1.0.0-alpha.4
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_URL: "mongodb://mongodb:27017/meteor"
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+
+  # nats:
+  #   image: nats:2.8.4-alpine
+  #   restart: on-failure
+  #   command: -js
+  #   ports:
+  #     - 4222:4222
+  #     - 8222:8222  
+
+networks:
+  default:
+    name: tchat-dev-network
