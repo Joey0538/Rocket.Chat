@@ -26,7 +26,7 @@ class VersionCompiler {
 				cpus: os.cpus().length,
 			};
 
-			exec('git log --pretty=format:\'%H%n%ad%n%an%n%s\' -n 1', function(err, result) {
+			exec("git log --pretty=format:'%H%n%ad%n%an%n%s' -n 1", function(err, result) {
 				if (err == null) {
 					result = result.split('\n');
 					output.commit = {
@@ -65,8 +65,11 @@ class VersionCompiler {
 	}
 }
 
-Plugin.registerCompiler({
-	extensions: ['info'],
-}, function() {
-	return new VersionCompiler();
-});
+Plugin.registerCompiler(
+	{
+		extensions: ['info'],
+	},
+	function() {
+		return new VersionCompiler();
+	},
+);

@@ -93,7 +93,7 @@ if (Meteor.isServer) {
 		};
 
 		if (req.method === 'OPTIONS') {
-			const regExp = new RegExp('^\/([^\/\?]+)\/([^\/\?]+)$');
+			const regExp = new RegExp('^/([^/?]+)/([^/?]+)$');
 			const match = regExp.exec(path);
 
 			// Request is not valid
@@ -117,7 +117,7 @@ if (Meteor.isServer) {
 			next();
 		} else if (req.method === 'POST') {
 			// Get store
-			const regExp = new RegExp('^\/([^\/\?]+)\/([^\/\?]+)$');
+			const regExp = new RegExp('^/([^/?]+)/([^/?]+)$');
 			const match = regExp.exec(path);
 
 			// Request is not valid
@@ -177,13 +177,16 @@ if (Meteor.isServer) {
 				res.writeHead(500);
 				res.end();
 			});
-			req.on('end', Meteor.bindEnvironment(() => {
-				// Update completed state without triggering hooks
-				fields.hash = spark.end();
-				fields.originalId = unique(fields.hash);
-				store.getCollection().direct.update({ _id: fileId }, { $set: fields });
-				ws.end();
-			}));
+			req.on(
+				'end',
+				Meteor.bindEnvironment(() => {
+					// Update completed state without triggering hooks
+					fields.hash = spark.end();
+					fields.originalId = unique(fields.hash);
+					store.getCollection().direct.update({ _id: fileId }, { $set: fields });
+					ws.end();
+				}),
+			);
 			ws.on('error', (err) => {
 				console.error(`ufs: cannot write chunk of file "${ fileId }" (${ err.message })`);
 				fs.unlink(tmpFile, (err) => {
@@ -198,7 +201,7 @@ if (Meteor.isServer) {
 			});
 		} else if (req.method === 'GET') {
 			// Get store, file Id and file name
-			const regExp = new RegExp('^\/([^\/\?]+)\/([^\/\?]+)(?:\/([^\/\?]+))?$');
+			const regExp = new RegExp('^/([^/?]+)/([^/?]+)(?:/([^/?]+))?$');
 			const match = regExp.exec(path);
 
 			// Avoid 504 Gateway timeout error
@@ -281,9 +284,11 @@ if (Meteor.isServer) {
 						if (req.headers['if-modified-since']) {
 							const modifiedSince = new Date(req.headers['if-modified-since']);
 
-							if ((file.modifiedAt instanceof Date && file.modifiedAt > modifiedSince)
-                // eslint-disable-next-line no-mixed-operators
-                || file.uploadedAt instanceof Date && file.uploadedAt > modifiedSince) {
+							if (
+								(file.modifiedAt instanceof Date && file.modifiedAt > modifiedSince)
+								// eslint-disable-next-line no-mixed-operators
+								|| (file.uploadedAt instanceof Date && file.uploadedAt > modifiedSince)
+							) {
 								res.writeHead(304); // Not Modified
 								res.end();
 								return;
@@ -310,7 +315,10 @@ if (Meteor.isServer) {
 								return;
 							}
 
-							const ranges = range.substr(unit.length).replace(/[^0-9\-,]/, '').split(',');
+							const ranges = range
+								.substr(unit.length)
+								.replace(/[^0-9\-,]/, '')
+								.split(',');
 
 							if (ranges.length > 1) {
 								// todo: support multipart ranges: https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests
@@ -342,14 +350,20 @@ if (Meteor.isServer) {
 					const rs = store.getReadStream(fileId, file, options);
 					const ws = new stream.PassThrough();
 
-					rs.on('error', Meteor.bindEnvironment((err) => {
-						store.onReadError.call(store, err, fileId, file);
-						res.end();
-					}));
-					ws.on('error', Meteor.bindEnvironment((err) => {
-						store.onReadError.call(store, err, fileId, file);
-						res.end();
-					}));
+					rs.on(
+						'error',
+						Meteor.bindEnvironment((err) => {
+							store.onReadError.call(store, err, fileId, file);
+							res.end();
+						}),
+					);
+					ws.on(
+						'error',
+						Meteor.bindEnvironment((err) => {
+							store.onReadError.call(store, err, fileId, file);
+							res.end();
+						}),
+					);
 					ws.on('close', () => {
 						// Close output stream at the end
 						ws.emit('end');

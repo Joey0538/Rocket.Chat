@@ -5,8 +5,7 @@ Package.describe({
 	git: '',
 });
 
-const additionalPackages = {
-};
+const additionalPackages = {};
 
 const fs = Npm.require('fs');
 
@@ -31,5 +30,5 @@ Package.onUse(function(api) {
 		}
 	});
 
-	api.use('rocketchat:tap-i18n@1.9.1');
+	api.use('rocketchat:tap-i18n');
 });

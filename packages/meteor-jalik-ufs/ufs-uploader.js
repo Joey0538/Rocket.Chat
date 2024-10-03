@@ -36,25 +36,28 @@ export class Uploader {
 		const self = this;
 
 		// Set default options
-		options = _.extend({
-			adaptive: true,
-			capacity: 0.9,
-			chunkSize: 16 * 1024,
-			data: null,
-			file: null,
-			maxChunkSize: 4 * 1024 * 1000,
-			maxTries: 5,
-			onAbort: this.onAbort,
-			onComplete: this.onComplete,
-			onCreate: this.onCreate,
-			onError: this.onError,
-			onProgress: this.onProgress,
-			onStart: this.onStart,
-			onStop: this.onStop,
-			retryDelay: 2000,
-			store: null,
-			transferDelay: 100,
-		}, options);
+		options = _.extend(
+			{
+				adaptive: true,
+				capacity: 0.9,
+				chunkSize: 16 * 1024,
+				data: null,
+				file: null,
+				maxChunkSize: 4 * 1024 * 1000,
+				maxTries: 5,
+				onAbort: this.onAbort,
+				onComplete: this.onComplete,
+				onCreate: this.onCreate,
+				onError: this.onError,
+				onProgress: this.onProgress,
+				onStart: this.onStart,
+				onStop: this.onStop,
+				retryDelay: 2000,
+				store: null,
+				transferDelay: 100,
+			},
+			options,
+		);
 
 		// Check options
 		if (typeof options.adaptive !== 'boolean') {
@@ -173,8 +176,8 @@ export class Uploader {
 		}
 
 		/**
-     * Aborts the current transfer
-     */
+		 * Aborts the current transfer
+		 */
 		self.abort = function() {
 			// Remove the file from database
 			// eslint-disable-next-line no-unused-vars
@@ -196,18 +199,18 @@ export class Uploader {
 		};
 
 		/**
-     * Returns the average speed in bytes per second
-     * @returns {number}
-     */
+		 * Returns the average speed in bytes per second
+		 * @returns {number}
+		 */
 		self.getAverageSpeed = function() {
 			const seconds = self.getElapsedTime() / 1000;
 			return self.getLoaded() / seconds;
 		};
 
 		/**
-     * Returns the elapsed time in milliseconds
-     * @returns {number}
-     */
+		 * Returns the elapsed time in milliseconds
+		 * @returns {number}
+		 */
 		self.getElapsedTime = function() {
 			if (startTime && self.isUploading()) {
 				return elapsedTime + (Date.now() - startTime);
@@ -216,33 +219,33 @@ export class Uploader {
 		};
 
 		/**
-     * Returns the file
-     * @return {object}
-     */
+		 * Returns the file
+		 * @return {object}
+		 */
 		self.getFile = function() {
 			return file;
 		};
 
 		/**
-     * Returns the loaded bytes
-     * @return {number}
-     */
+		 * Returns the loaded bytes
+		 * @return {number}
+		 */
 		self.getLoaded = function() {
 			return loaded;
 		};
 
 		/**
-     * Returns current progress
-     * @return {number}
-     */
+		 * Returns current progress
+		 * @return {number}
+		 */
 		self.getProgress = function() {
-			return Math.min((loaded / total) * 100 / 100, 1.0);
+			return Math.min(((loaded / total) * 100) / 100, 1.0);
 		};
 
 		/**
-     * Returns the remaining time in milliseconds
-     * @returns {number}
-     */
+		 * Returns the remaining time in milliseconds
+		 * @returns {number}
+		 */
 		self.getRemainingTime = function() {
 			const averageSpeed = self.getAverageSpeed();
 			const remainingBytes = total - self.getLoaded();
@@ -250,9 +253,9 @@ export class Uploader {
 		};
 
 		/**
-     * Returns the upload speed in bytes per second
-     * @returns {number}
-     */
+		 * Returns the upload speed in bytes per second
+		 * @returns {number}
+		 */
 		self.getSpeed = function() {
 			if (timeA && timeB && self.isUploading()) {
 				const seconds = (timeB - timeA) / 1000;
@@ -262,36 +265,36 @@ export class Uploader {
 		};
 
 		/**
-     * Returns the total bytes
-     * @return {number}
-     */
+		 * Returns the total bytes
+		 * @return {number}
+		 */
 		self.getTotal = function() {
 			return total;
 		};
 
 		/**
-     * Checks if the transfer is complete
-     * @return {boolean}
-     */
+		 * Checks if the transfer is complete
+		 * @return {boolean}
+		 */
 		self.isComplete = function() {
 			return complete;
 		};
 
 		/**
-     * Checks if the transfer is active
-     * @return {boolean}
-     */
+		 * Checks if the transfer is active
+		 * @return {boolean}
+		 */
 		self.isUploading = function() {
 			return uploading;
 		};
 
 		/**
-     * Reads a portion of file
-     * @param start
-     * @param length
-     * @param callback
-     * @returns {Blob}
-     */
+		 * Reads a portion of file
+		 * @param start
+		 * @param length
+		 * @param callback
+		 * @returns {Blob}
+		 */
 		self.readChunk = function(start, length, callback) {
 			if (typeof callback !== 'function') {
 				throw new Error('readChunk is missing callback');
@@ -322,8 +325,8 @@ export class Uploader {
 		};
 
 		/**
-     * Sends a file chunk to the store
-     */
+		 * Sends a file chunk to the store
+		 */
 		self.sendChunk = function() {
 			if (!complete && startTime !== null) {
 				if (offset < total) {
@@ -412,8 +415,8 @@ export class Uploader {
 		};
 
 		/**
-     * Starts or resumes the transfer
-     */
+		 * Starts or resumes the transfer
+		 */
 		self.start = function() {
 			if (!fileId) {
 				// Create the file document and get the token
@@ -443,8 +446,8 @@ export class Uploader {
 		};
 
 		/**
-     * Stops the transfer
-     */
+		 * Stops the transfer
+		 */
 		self.stop = function() {
 			if (uploading) {
 				// Update elapsed time
@@ -464,61 +467,55 @@ export class Uploader {
 	}
 
 	/**
-   * Called when the file upload is aborted
-   * @param file
-   */
+	 * Called when the file upload is aborted
+	 * @param file
+	 */
 	// eslint-disable-next-line no-unused-vars
-	onAbort(file) {
-	}
+	onAbort(file) {}
 
 	/**
-   * Called when the file upload is complete
-   * @param file
-   */
+	 * Called when the file upload is complete
+	 * @param file
+	 */
 	// eslint-disable-next-line no-unused-vars
-	onComplete(file) {
-	}
+	onComplete(file) {}
 
 	/**
-   * Called when the file is created in the collection
-   * @param file
-   */
+	 * Called when the file is created in the collection
+	 * @param file
+	 */
 	// eslint-disable-next-line no-unused-vars
-	onCreate(file) {
-	}
+	onCreate(file) {}
 
 	/**
-   * Called when an error occurs during file upload
-   * @param err
-   * @param file
-   */
+	 * Called when an error occurs during file upload
+	 * @param err
+	 * @param file
+	 */
 	// eslint-disable-next-line no-unused-vars
 	onError(err, file) {
 		console.error(`ufs: ${ err.message }`);
 	}
 
 	/**
-   * Called when a file chunk has been sent
-   * @param file
-   * @param progress is a float from 0.0 to 1.0
-   */
+	 * Called when a file chunk has been sent
+	 * @param file
+	 * @param progress is a float from 0.0 to 1.0
+	 */
 	// eslint-disable-next-line no-unused-vars
-	onProgress(file, progress) {
-	}
+	onProgress(file, progress) {}
 
 	/**
-   * Called when the file upload starts
-   * @param file
-   */
+	 * Called when the file upload starts
+	 * @param file
+	 */
 	// eslint-disable-next-line no-unused-vars
-	onStart(file) {
-	}
+	onStart(file) {}
 
 	/**
-   * Called when the file upload stops
-   * @param file
-   */
+	 * Called when the file upload stops
+	 * @param file
+	 */
 	// eslint-disable-next-line no-unused-vars
-	onStop(file) {
-	}
+	onStop(file) {}
 }
